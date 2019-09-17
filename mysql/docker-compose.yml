@@ -1,0 +1,92 @@
+version: '3.7'
+
+volumes:
+  db_data: {}
+
+networks:
+  front-tier:
+  back-tier:
+
+services:
+  db_mysqld:
+    image: mysql:5.7.27 #8.0.17
+    container_name: db_mysqld
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'db'
+      # So you don't have to use root, but you can if you like
+      MYSQL_USER: 'prometheus'
+      # You can use whatever password you like
+      MYSQL_PASSWORD: 'prometheus'
+      # Password for root access
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      # <Port exposed> : < MySQL Port running inside container>
+      - '3306:3306'
+    expose:
+      # Opens port 3306 on the container
+      - '3306'
+      # Where our data will be persisted
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./mysql/conf.d/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      # - ./mysql/:/etc/mysql/my.cnf
+    networks:
+      - back-tier
+      - front-tier
+    restart: always
+    
+  mysqld_exporter:
+    image: prom/mysqld-exporter:latest
+    container_name: db_mysqld_exporter
+    environment:
+      - DATA_SOURCE_NAME=root:password@(db_mysqld:3306)/
+    ports:
+      - "9104:9104"
+    networks:
+      - back-tier
+      - front-tier
+    deploy:
+      mode: global      
+    restart: always
+    command: 
+      - --web.listen-address=:9104
+    labels:
+      - "mon.percona.container_type=collector"
+    depends_on:
+      - db_mysqld
+
+  # node-exporter:
+  #   image: prom/node-exporter:latest
+  #   container_name: db_node_exporter
+  #   ports:
+  #     - 9100:9100
+  #   networks:
+  #     - back-tier
+  #   restart: always
+  #   deploy:
+  #     mode: global
+  #   volumes:
+  #     - /proc:/host/proc:ro
+  #     - /sys:/host/sys:ro
+  #     - /:/rootfs:ro
+  #   command: 
+  #     - '--path.procfs=/host/proc' 
+  #     - '--path.sysfs=/host/sys'
+  #     - --collector.filesystem.ignored-mount-points
+  #     - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
+
+  # cadvisor:
+  #   image: google/cadvisor:latest
+  #   container_name: db_cadvisor
+  #   volumes:
+  #     - /:/rootfs:ro
+  #     - /var/run:/var/run:rw
+  #     - /sys:/sys:ro
+  #     - /var/lib/docker/:/var/lib/docker:ro
+  #   ports:
+  #     - "9101:9101"
+  #   networks:
+  #     - back-tier
+  #   labels:
+  #     - "mon.percona.container_type=collector"

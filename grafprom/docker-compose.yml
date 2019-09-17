@@ -1,15 +1,14 @@
 version: '3.7'
 
 volumes:
-    prometheus_data: {}
-    grafana_data: {}
+  prometheus_data: {}
+  grafana_data: {}
 
 networks:
   front-tier:
   back-tier:
 
 services:
-
   node-exporter:
     image: prom/node-exporter
     volumes:
