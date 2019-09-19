@@ -1,11 +1,14 @@
 version: '3.7'
 
+# https://docs.docker.com/compose/compose-file/
+
 volumes:
   db_data: {}
 
 networks:
   front-tier:
   back-tier:
+
 
 services:
   db_mysqld:
@@ -30,7 +33,6 @@ services:
     volumes:
       - db_data:/var/lib/mysql
       - ./mysql/conf.d/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
-      # - ./mysql/:/etc/mysql/my.cnf
     networks:
       - back-tier
       - front-tier
@@ -46,6 +48,7 @@ services:
     networks:
       - back-tier
       - front-tier
+    # network_mode: "host"
     deploy:
       mode: global      
     restart: always
