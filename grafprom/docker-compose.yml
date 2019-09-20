@@ -10,13 +10,14 @@ networks:
   front-tier: 
   back-tier:
   default:
-      driver: bridge
+    driver: bridge
 
 services:
 
   node-exporter:
     image: prom/node-exporter
     container_name: grafprom-nodeexporter
+    hostname: grafprom-nodeexporter
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
@@ -47,13 +48,13 @@ services:
       - '--web.console.templates=/usr/share/prometheus/consoles'
     ports:
       - 9090:9090
-    # links:
-    #   - alertmanager:alertmanager
-    #   - cadvisor:cadvisor
-    # networks:
-    #   - front-tier
-    #   - back-tier
-    network_mode: host
+    links:
+      - alertmanager:alertmanager
+      - cadvisor:cadvisor
+    networks:
+      - front-tier
+      - back-tier
+    # network_mode: host
     restart: always
     depends_on:
       - cadvisor
