@@ -27,3 +27,6 @@
 # http://dev.mysql.com/doc/mysql/en/server-system-variables.html
 
 [mysql]
+
+# By default we only accept connections from localhost
+# bind-address = 0.0.0.0

@@ -37,7 +37,7 @@ services:
       - back-tier
       - front-tier
     restart: always
-    
+
   mysqld_exporter:
     image: prom/mysqld-exporter:latest
     container_name: db_mysqld_exporter
@@ -50,9 +50,9 @@ services:
       - front-tier
     # network_mode: "host"
     deploy:
-      mode: global      
+      mode: global
     restart: always
-    command: 
+    command:
       - --web.listen-address=:9104
     labels:
       - "mon.percona.container_type=collector"
@@ -73,8 +73,8 @@ services:
   #     - /proc:/host/proc:ro
   #     - /sys:/host/sys:ro
   #     - /:/rootfs:ro
-  #   command: 
-  #     - '--path.procfs=/host/proc' 
+  #   command:
+  #     - '--path.procfs=/host/proc'
   #     - '--path.sysfs=/host/sys'
   #     - --collector.filesystem.ignored-mount-points
   #     - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
