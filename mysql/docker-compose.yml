@@ -33,6 +33,7 @@ services:
     volumes:
       - db_data:/var/lib/mysql
       - ./mysql/conf.d/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ./mysql/init:/docker-entrypoint-initdb.d
     networks:
       - back-tier
       - front-tier
