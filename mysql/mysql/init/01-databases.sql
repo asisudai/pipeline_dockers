@@ -1,3 +1,4 @@
+-- Run once when docker image is created
 # create unittest databases
 CREATE DATABASE IF NOT EXISTS `unittest`;
 
