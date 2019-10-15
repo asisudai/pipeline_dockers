@@ -40,6 +40,30 @@ services:
       - front-tier
     restart: always
 
+  # https://hub.docker.com/r/databack/mysql-backup
+  mysql_backup:
+    image: databack/mysql-backup
+    container_name: db_mysql_backup
+    restart: always
+    user: '0'
+    networks:
+      - back-tier
+    depends_on:
+      - db_mysqld
+    volumes:
+    - /etc/localtime:/etc/localtime:ro
+    - ./backup:/db
+    #  - /path/to/pre-backup/scripts:/scripts.d/pre-backup
+    #  - /path/to/post-backup/scripts:/scripts.d/post-backup
+    environment:
+      MYSQL_DATABASE: db
+      DB_DUMP_TARGET: /db
+      DB_USER: root
+      DB_PASS: password
+      DB_DUMP_FREQ: 60
+      DB_DUMP_BEGIN: +0
+      DB_SERVER: db_mysqld
+
   mysqld_exporter:
     image: prom/mysqld-exporter:latest
     container_name: db_mysqld_exporter
@@ -54,6 +78,8 @@ services:
     deploy:
       mode: global
     restart: always
+    volumes:
+    - /etc/localtime:/etc/localtime:ro
     command:
       - --web.listen-address=:9104
     labels:
