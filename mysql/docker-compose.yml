@@ -56,13 +56,15 @@ services:
     #  - /path/to/pre-backup/scripts:/scripts.d/pre-backup
     #  - /path/to/post-backup/scripts:/scripts.d/post-backup
     environment:
-      MYSQL_DATABASE: db
-      DB_DUMP_TARGET: /db
+      # MYSQL_DATABASE: db
+      DB_SERVER: db_mysqld
       DB_USER: root
       DB_PASS: password
-      DB_DUMP_FREQ: 60
+      DB_DUMP_BY_SCHEMA: 'true'
+      DB_DUMP_TARGET: /db
+      DB_NAMES: db
+      DB_DUMP_FREQ: 1440
       DB_DUMP_BEGIN: +0
-      DB_SERVER: db_mysqld
 
   mysqld_exporter:
     image: prom/mysqld-exporter:latest
