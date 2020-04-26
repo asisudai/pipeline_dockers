@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.3'
 
 # https://docs.docker.com/compose/compose-file/
 
@@ -7,7 +7,7 @@ volumes:
   grafana_data: {}
 
 networks:
-  front-tier: 
+  front-tier:
   back-tier:
   default:
     driver: bridge
@@ -22,8 +22,8 @@ services:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
       - /:/rootfs:ro
-    command: 
-      - '--path.procfs=/host/proc' 
+    command:
+      - '--path.procfs=/host/proc'
       - '--path.sysfs=/host/sys'
       - --collector.filesystem.ignored-mount-points
       - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
@@ -109,5 +109,4 @@ services:
     restart: always
     command:
       - '--config.file=/etc/alertmanager/config.yml'
-      - '--storage.path=/alertmanager'    
-
+      - '--storage.path=/alertmanager'
